@@ -1,19 +1,18 @@
 import { registerDb } from "../Domain/domain.js";
 
-const user = async(req, res)=>{
-    const{firstname, lastname, email, password} = req.body
-    console.log('req.body',req.body)
+const user = async (req, res) => {
+    const { firstname, lastname, email, password } = req.body;
+    try {
+        if (!firstname || !lastname || !email || !password) {
+            return res.status(400).json('Missing field in the request body');
+        }
 
-    if(!firstname, !lastname, !email, !password){
-        return res.status(400).json('Missing field in the request body')
+        const newUser = await registerDb(firstname, lastname, email, password);
+        return res.status(201).json("You've Successfully registered");
+    } catch (err) {
+        console.error('Error registering user:', err);
+        return res.status(500).json({ error: 'Internal server error' });
     }
-    const newUser = await registerDb(firstname, lastname, email, password)
-    try{
-        res.status(201).json("You've Succesfully registered")
-    }catch(err){
-        res.status(500).json(err.message)
-    }
-}
+};
 
-
-export {user}
+export { user };
