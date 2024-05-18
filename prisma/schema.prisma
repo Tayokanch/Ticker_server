@@ -8,9 +8,13 @@ datasource db {
 }
 
 model Register {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  firstname String
-  lastname  String
-  email     String
-  password  String
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  firstname    String
+  lastname     String
+  email        String @unique
+  password     String
+  userQuestion String
+  userAnswer   String
 }
+
+ 
