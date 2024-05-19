@@ -44,14 +44,14 @@ const login = async (req, res) =>{
     })
     try{
         if(!user){
-            return res.status(404).json({ message: "Incorrect email or password" });
+            return res.status(404).json({ error: "Incorrect email or password" });
         }
         const userPassword = await bcrypt.compare(password, user.password)
         if(!userPassword){
-            return res.status(404).json({ message: "Incorrect email or password" });
+            return res.status(404).json({ error: "Incorrect email or password" });
         }
         const token = await jwt.sign({id:user.id, firstname:user.firstname}, SECRET)
-        return res.status(200).json({token, login: true})
+        return res.status(200).json({token, login: true })
     
 
     }
@@ -88,7 +88,7 @@ const findUser = async (req, res) => {
 
 const updatePassword = async(req, res)=>{
     const { email,newPassword, userAnswer} = req.body
-    
+        
     if ( !email|| !newPassword ||!userAnswer ) {
             return res.status(400).json({error:'Missing field in the request body'});
     }
@@ -103,9 +103,9 @@ const updatePassword = async(req, res)=>{
             return res.status(404).json({error: "user with the email not found"})
         }
     
-        const verifySecurityAnswer = user.userAnswer === userAnswer;
+        const verifySecurityAnswer = user.userAnswer.toLowerCase() === userAnswer.toLowerCase();
         if(!verifySecurityAnswer){
-            return res.status(406).json({error: "incorrect answer"})
+            return res.status(404).json({error: "incorrect answer"})
         }
 
         const hashedpassword = await bcrypt.hash(newPassword, 12)

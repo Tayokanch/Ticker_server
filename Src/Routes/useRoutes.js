@@ -7,8 +7,9 @@ import { findUser } from "../Controllers/register.js";
 const router = express.Router()
 router.post('/register', CreateUser)
 router.post('/login', login)
-router.post('/updatepassword', updatePassword)
 router.post('/findUser', findUser)
+router.post('/updatepassword', updatePassword)
+
 
 
 
