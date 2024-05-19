@@ -62,11 +62,35 @@ const login = async (req, res) =>{
 
 }
 
+const findUser = async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json('Missing field in the request body');
+    }
+
+    try {
+        const user = await prisma.register.findUnique({
+            where: {
+                email: email
+            }
+        });
+        if (!user) {
+            return res.status(404).json({ error: "User with the email not found" });
+        }
+        return res.status(200).json({ question: user.userQuestion, email: user.email });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+
 const updatePassword = async(req, res)=>{
-    const {email, securityQuestion, newPassword} = req.body
+    const { email,newPassword, userAnswer} = req.body
     
-    if (!email ||!newPassword ||!securityQuestion ) {
-            return res.status(400).json('Missing field in the request body');
+    if ( !email|| !newPassword ||!userAnswer ) {
+            return res.status(400).json({error:'Missing field in the request body'});
     }
 
     try{
@@ -76,12 +100,12 @@ const updatePassword = async(req, res)=>{
             }
         })
         if(!user){
-            return res.status(404).json({message: "user with the email not found"})
+            return res.status(404).json({error: "user with the email not found"})
         }
     
-        const verifySecurityQuestion = user.securityQuestion === securityQuestion;
-        if(!verifySecurityQuestion){
-            return res.status(406).json({message: "incorrect answer"})
+        const verifySecurityAnswer = user.userAnswer === userAnswer;
+        if(!verifySecurityAnswer){
+            return res.status(406).json({error: "incorrect answer"})
         }
 
         const hashedpassword = await bcrypt.hash(newPassword, 12)
@@ -94,13 +118,13 @@ const updatePassword = async(req, res)=>{
             }
         })
         if(!changedPassword){
-            return res.status(400).json({message: "error trying to change password"})
+            return res.status(400).json({error: "error trying to change password"})
         }
         return res.status(200).json({ message: "Password successfully updated" });
     }
     catch(err){
         console.error(err)
-      return res.status(500).json({err: "inter server error"})
+      return res.status(500).json({error: "inter server error"})
     }
 
 
@@ -109,4 +133,4 @@ const updatePassword = async(req, res)=>{
 
 
 
-export { CreateUser, login, updatePassword };
+export { CreateUser, login, updatePassword, findUser};
