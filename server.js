@@ -2,6 +2,7 @@ import express from "express"
 import cors from "cors"
 import morgan from "morgan"
 import userRouter from './Src/Routes/useRoutes.js'
+import ticketsRouter from './Src/Routes/ticketsRoute.js'
 const app = express()
 app.disable('x-powered-by');
 
@@ -12,5 +13,6 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/user', userRouter)
+app.use("/", ticketsRouter)
 
 export {app}

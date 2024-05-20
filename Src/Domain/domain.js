@@ -1,5 +1,5 @@
 import {prisma} from '../utils.js'
-const registerDb = async(firstname, lastname, email, password, userQuestion, userAnswer)=> await prisma.register.create({
+const registerDb = async(firstname, lastname, email, password, userQuestion, userAnswer)=> await prisma.user.create({
     data:{
         firstname,
         lastname,
@@ -10,4 +10,15 @@ const registerDb = async(firstname, lastname, email, password, userQuestion, use
     }
 })
 
-export {registerDb}
+
+const ticketsDb = async (ticketLocation, ticketDestination, price, description, userId)=> await prisma.tickets.create({
+    data:{
+        ticketLocation,
+        ticketDestination,
+        price,
+        description,
+        userId
+    }
+
+})
+export {registerDb, ticketsDb}

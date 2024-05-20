@@ -15,7 +15,7 @@ const CreateUser = async (req, res) => {
         if (!firstname || !lastname || !email || !password || !userQuestion|| !userAnswer)  {
             return res.status(400).json({error :'Missing field in the request body'});
         }
-        const compareUser = await prisma.register.findUnique({
+        const compareUser = await prisma.user.findUnique({
             where:{
                 email: email
             }
@@ -37,7 +37,7 @@ const CreateUser = async (req, res) => {
 
 const login = async (req, res) =>{
     const {email, password} = req.body
-    const user = await prisma.register.findUnique({
+    const user = await prisma.user.findUnique({
         where:{
             email: email
         }
@@ -70,7 +70,7 @@ const findUser = async (req, res) => {
     }
 
     try {
-        const user = await prisma.register.findUnique({
+        const user = await prisma.user.findUnique({
             where: {
                 email: email
             }
@@ -94,7 +94,7 @@ const updatePassword = async(req, res)=>{
     }
 
     try{
-        const user = await prisma.register.findUnique({
+        const user = await prisma.user.findUnique({
             where:{
                 email: email
             }
@@ -109,7 +109,7 @@ const updatePassword = async(req, res)=>{
         }
 
         const hashedpassword = await bcrypt.hash(newPassword, 12)
-        const changedPassword = await prisma.register.update({
+        const changedPassword = await prisma.user.update({
             where:{
                 email:email
             },
