@@ -1,13 +1,12 @@
 import { createChatDb } from '../Domain/domain.js';
 import {prisma} from '../utils.js'
-createChatDb
 
-const createChat = async(req, res)=>{
 
-    const{firstId, secondId}= req.body
-    try{
+const createChat = async (req, res) => {
+    const { firstId, secondId } = req.body;
+    try {
 
-        const checkIfChatExists = await prisma.chat.findUnique({
+        const checkIfChatExists = await prisma.chat.findFirst({
             where: {
                 AND: [
                     { members: { has: firstId } },
@@ -15,29 +14,24 @@ const createChat = async(req, res)=>{
                 ]
             }
         });
-        if(checkIfChatExists){
-            return res.status(200).json({chat:checkIfChatExists})
+        if (checkIfChatExists) {
+            return res.status(200).json({ chat: checkIfChatExists });
         }
 
-        const newChat = await prisma.chat.create({
-            data:{
-                firstId,
-                secondId
-            }
-        })
-        return res.status(200).json({chat:newChat})
+        const newChat = await createChatDb(firstId, secondId);
+        return res.status(200).json({ chat: newChat });
         
-    }catch(err){
-        console.error(err)
-       return res.status(500).json({error:"Internal Server error"})
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Internal Server error" });
     }
+};
 
-}
 
-const findUserChat = async()=>{
+const findUserChats = async(req, res)=>{
     const {userId} = req.params
     try{
-        const userChat = await prisma.chat.findUnique({
+        const userChat = await prisma.chat.findMany({
             where: {
                 members: { has: userId }
             }
@@ -56,14 +50,15 @@ const findUserChat = async()=>{
 
 }
 
-const findParticularChat = async()=>{
-    const {firstId, secondId} = req.params
+const findParticularChat = async(req, res)=>{
+
+    console.log('this is req.params', firstId, secondId);
     try{
-       const chat =  await prisma.chat.findUnique({
+       const chat =  await prisma.chat.findFirst({
             where: {
                 AND: [
-                    { member: { has: firstId } },
-                    { member: { has: secondId } }
+                    { members: { has: firstId } },
+                    { members: { has: secondId } }
                 ]
             }
         });
@@ -81,4 +76,4 @@ const findParticularChat = async()=>{
 
 }
 
-export {findUserChat, createChat, findParticularChat}
+export {findUserChats, createChat, findParticularChat}

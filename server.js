@@ -16,6 +16,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/users', userRouter)
 app.use("/", ticketsRouter)
-app.use("/chat", chatRouter)
+app.use("/api/chat", chatRouter)
 
 export {app}
