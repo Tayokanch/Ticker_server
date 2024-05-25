@@ -51,7 +51,7 @@ const login = async (req, res) =>{
             return res.status(404).json({ error: "Incorrect email or password" });
         }
         const token = await jwt.sign({id:user.id, firstname:user.firstname}, SECRET)
-        return res.status(200).json({token, login: true })
+        return res.status(200).json({token, login: true, id : user.id })
     
 
     }
@@ -84,6 +84,41 @@ const findUser = async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
     }
 };
+
+const findUserById = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId 
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" }); 
+        }
+
+        res.status(200).json(user); 
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Internal server error" }); 
+    }
+};
+
+
+const getUsers = async (req, res)=>{
+    try{
+        const users = await prisma.user.findMany()
+        res.status(200).json({users})
+
+    }catch(err){
+        console.error(err)
+        return res.status(500).json({error:"Internal Server error"})
+
+    }
+
+}
 
 
 const updatePassword = async(req, res)=>{
@@ -133,4 +168,4 @@ const updatePassword = async(req, res)=>{
 
 
 
-export { CreateUser, login, updatePassword, findUser};
+export { CreateUser, login, updatePassword, findUser, getUsers, findUserById};

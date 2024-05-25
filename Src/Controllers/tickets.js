@@ -18,6 +18,28 @@ const createTickets = async (req, res)=>{
 
 }
 
+const getAllTickets = async (req, res)=>{
+    const tickets = await prisma.tickets.findMany({
+        include: {
+          User: {
+            select: {
+              firstname: true
+            }
+          }
+        }
+      });
+      try{
+        if(!tickets){
+            return res.status(400).json({error: "Unable to get tickets"})
+        }
+       return  res.status(200).json({tickets})
+
+    }catch(err){
+       return res.status(500).json({error: "internal Server error"})
+    }
+
+}
+
 const searchTickets = async (req, res)=>{
     const {ticketLocation, ticketDestination}= req.body
     try{
@@ -30,13 +52,13 @@ const searchTickets = async (req, res)=>{
                 ticketLocation,
                 ticketDestination
             },
-            select:{
-                id : true,
-                ticketLocation: true,
-                ticketDestination: true,
-                price: true,
-                description: true
-            }
+            include: {
+                User: {
+                  select: {
+                    firstname: true
+                  }
+                }
+              }
         })
         return res.status(200).json({tickets})
 
@@ -46,4 +68,4 @@ const searchTickets = async (req, res)=>{
     }
 }
 
-export {createTickets, searchTickets}
+export {createTickets, searchTickets, getAllTickets}
