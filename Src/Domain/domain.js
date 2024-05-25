@@ -21,4 +21,11 @@ const ticketsDb = async (ticketLocation, ticketDestination, price, description, 
     }
 
 })
-export {registerDb, ticketsDb}
+
+const createChatDb = async(firstId, secondId)=> await prisma.chat.create({
+    data:{
+        firstId,
+        secondId
+    }
+})
+export {registerDb, ticketsDb, createChatDb}
