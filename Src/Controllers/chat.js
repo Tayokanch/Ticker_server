@@ -51,8 +51,6 @@ const findUserChats = async(req, res)=>{
 }
 
 const findParticularChat = async(req, res)=>{
-
-    console.log('this is req.params', firstId, secondId);
     try{
        const chat =  await prisma.chat.findFirst({
             where: {

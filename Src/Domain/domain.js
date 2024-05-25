@@ -27,4 +27,12 @@ const createChatDb = async(firstId, secondId)=> await prisma.chat.create({
         members: [firstId, secondId]
     }
 })
-export {registerDb, ticketsDb, createChatDb}
+
+const createMessageDb = async (chatId, senderId, text)=> await prisma.messages.create({
+    data:{
+        chatId,
+        senderId,
+        text
+    }
+})
+export {registerDb, ticketsDb, createChatDb, createMessageDb}
