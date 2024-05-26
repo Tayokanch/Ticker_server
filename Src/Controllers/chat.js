@@ -41,7 +41,7 @@ const findUserChats = async(req, res)=>{
             return res.status(400).json("Chat not found for user")
         }
 
-        return res.status(200).json({chat:userChat})
+        return res.status(200).json({chats:userChat})
     }catch(err){
         console.error(err)
        return res.status(500).json({error:"Internal Server error"})
@@ -51,6 +51,7 @@ const findUserChats = async(req, res)=>{
 }
 
 const findParticularChat = async(req, res)=>{
+    const {firstId, secondId} = req.params;
     try{
        const chat =  await prisma.chat.findFirst({
             where: {
