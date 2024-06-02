@@ -52,7 +52,7 @@ const login = async (req, res) =>{
             return res.status(404).json({ error: "Incorrect email or password" });
         }
         const token = await jwt.sign({id:user.id, firstname:user.firstname}, SECRET)
-        return res.status(200).json({token, login: true, id : user.id })
+        return res.status(200).json({token, login: true, id : user.id, firstname : user.firstname, lastname : user.lastname, email :user.email })
     
 
     }

@@ -23,7 +23,8 @@ const getAllTickets = async (req, res)=>{
         include: {
           User: {
             select: {
-              firstname: true
+              firstname: true,
+              id: true
             }
           }
         }
