@@ -8,32 +8,36 @@ dotenv.config();
 const SECRET = process.env.SECRET
 
 const CreateUser = async (req, res) => {
-
-    const { firstname, lastname, email, password, userQuestion,userAnswer } = req.body;
+    const image = req.file;
+    const { firstname, lastname, email, password, userQuestion, userAnswer } = req.body;
+  
     try {
-
-        if (!firstname || !lastname || !email || !password || !userQuestion|| !userAnswer)  {
-            return res.status(400).json({error :'Missing field in the request body'});
+      if (!firstname || !lastname || !email || !password || !userQuestion || !userAnswer) {
+        return res.status(400).json({ error: 'Missing field in the request body' });
+      }
+      if (!image) {
+        return res.status(400).json({ error: 'File is required' });
+      }
+  
+      const compareUser = await prisma.user.findUnique({
+        where: {
+          email: email
         }
-        const compareUser = await prisma.user.findUnique({
-            where:{
-                email: email
-            }
-        })
-    
-        if(compareUser){
-            return res.status(400).json({error: 'User with provided email already exists'})
-        }
-
-        const hashedpassword = await bcrypt.hash(password, 12)
-        const newUser = await registerDb(firstname, lastname, email, hashedpassword, userQuestion, userAnswer);
-        return res.status(201).json({message : "You've Successfully registered"});
+      });
+  
+      if (compareUser) {
+        return res.status(400).json({ error: 'User with provided email already exists' });
+      }
+  
+      const hashedPassword = await bcrypt.hash(password, 12);
+      const newUser = await registerDb(firstname, lastname, email, hashedPassword, userQuestion, userAnswer, image);
+      return res.status(201).json({ message: "You've Successfully registered" });
     } catch (err) {
-        console.error('Error registering user:', err);
-        return res.status(500).json({ error: 'Internal server error' });
+      console.error('Error registering user:', err);
+      return res.status(500).json({ error: 'Internal server error' });
     }
 };
-
+  
 
 const login = async (req, res) =>{
     const {email, password} = req.body
@@ -52,13 +56,12 @@ const login = async (req, res) =>{
             return res.status(404).json({ error: "Incorrect email or password" });
         }
         const token = await jwt.sign({id:user.id, firstname:user.firstname}, SECRET)
-        return res.status(200).json({token, login: true, id : user.id, firstname : user.firstname, lastname : user.lastname, email :user.email })
+        return res.status(200).json({token, login: true, id : user.id, firstname : user.firstname, lastname : user.lastname, email :user.email , image: user.image})
     
 
     }
     catch(err){
         console.error(err)
-        console.log("this is the error", err)
         return res.status(500).json({ error: 'Internal server error' });
     }
 

@@ -15,6 +15,7 @@ model User {
   password     String
   userQuestion String
   userAnswer   String
+  image        String
   tickets      Tickets[]
 }
 

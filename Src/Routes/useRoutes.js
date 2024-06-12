@@ -5,8 +5,9 @@ import { updatePassword } from "../Controllers/register.js";
 import { findUser } from "../Controllers/register.js";
 import { getUsers } from "../Controllers/register.js";
 import { findUserById } from "../Controllers/register.js";
+import uploadImage from "../Controllers/images.js";
 const router = express.Router()
-router.post('/register', CreateUser)
+router.post('/register', uploadImage.single('file'), CreateUser);
 router.post('/login', login)
 router.post('/findUser', findUser)
 router.post('/updatepassword', updatePassword)
