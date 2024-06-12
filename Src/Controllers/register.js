@@ -57,8 +57,6 @@ const login = async (req, res) =>{
         }
         const token = await jwt.sign({id:user.id, firstname:user.firstname}, SECRET)
         return res.status(200).json({token, login: true, id : user.id, firstname : user.firstname, lastname : user.lastname, email :user.email , image: user.image})
-    
-
     }
     catch(err){
         console.error(err)
