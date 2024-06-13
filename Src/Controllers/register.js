@@ -3,17 +3,25 @@ import bcrypt from "bcrypt"
 import { prisma } from "../utils.js";
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { cloudinary } from "../utils.js";
+
 dotenv.config();
 
 const SECRET = process.env.SECRET
 
+
 const CreateUser = async (req, res) => {
-    const image = req.file;
-    const { firstname, lastname, email, password, userQuestion, userAnswer } = req.body;
+
+    const { firstname, lastname, email, password, userQuestion, userAnswer , image} = req.body;
+
   
     try {
+        const result = await cloudinary.uploader.upload(image, {
+            folder: "userImages"
+        })
+
       if (!firstname || !lastname || !email || !password || !userQuestion || !userAnswer) {
-        return res.status(400).json({ error: 'Missing field in the request body' });
+        return res.status(400).json({ error: 'Missing field in the request body' })
       }
       if (!image) {
         return res.status(400).json({ error: 'File is required' });
@@ -27,15 +35,17 @@ const CreateUser = async (req, res) => {
   
       if (compareUser) {
         return res.status(400).json({ error: 'User with provided email already exists' });
-      }
+        }
   
       const hashedPassword = await bcrypt.hash(password, 12);
-      const newUser = await registerDb(firstname, lastname, email, hashedPassword, userQuestion, userAnswer, image);
+      const newUser = await registerDb(firstname, lastname, email, hashedPassword, userQuestion, userAnswer, result);
       return res.status(201).json({ message: "You've Successfully registered" });
-    } catch (err) {
+
+    } 
+    catch (err) {
       console.error('Error registering user:', err);
       return res.status(500).json({ error: 'Internal server error' });
-    }
+    } 
 };
   
 

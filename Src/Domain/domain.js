@@ -1,5 +1,5 @@
 import {prisma} from '../utils.js'
-const registerDb = async(firstname, lastname, email, password, userQuestion, userAnswer, image)=> await prisma.user.create({
+const registerDb = async(firstname, lastname, email, password, userQuestion, userAnswer, result)=> await prisma.user.create({
     data:{
         firstname,
         lastname,
@@ -7,7 +7,10 @@ const registerDb = async(firstname, lastname, email, password, userQuestion, use
         password,
         userQuestion,
         userAnswer,
-        image: image.path 
+        image: {
+            publicId: result.public_id,
+            url: result.secure_url
+        } 
 
     }
 })
