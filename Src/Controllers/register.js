@@ -89,10 +89,11 @@ const findUser = async (req, res) => {
                 email: email
             }
         });
+
         if (!user) {
             return res.status(404).json({ error: "User with the email not found" });
         }
-        return res.status(200).json({ question: user.userQuestion, email: user.email });
+        return res.status(200).json({ question: user.userQuestion, email: user.email, image: user.image });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: "Internal server error" });
@@ -108,12 +109,12 @@ const findUserById = async (req, res) => {
                 id: userId 
             }
         });
-
+        
         if (!user) {
             return res.status(404).json({ error: "User not found" }); 
         }
 
-        res.status(200).json({id: user.id,firstname : user.firstname}); 
+        res.status(200).json({id: user.id,firstname : user.firstname, image: user.image}); 
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: "Internal server error" }); 
