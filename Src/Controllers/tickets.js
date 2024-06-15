@@ -45,7 +45,7 @@ const searchTickets = async (req, res)=>{
     const {ticketLocation, ticketDestination}= req.body
     try{
         if(!ticketLocation || !ticketDestination){
-            res.status(400).json({error: "Missing field in the request body"})
+            return res.status(400).json({error: "Missing field in the request body"})
         }
 
         const tickets = await prisma.tickets.findMany({
